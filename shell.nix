@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  rustupToolchain = "nightly-2021-10-06";
+  rustupToolchain = "nightly-2024-04-29";
 
   rustBuildTargetTriple = "x86_64-pc-windows-gnu";
   rustBuildHostTriple = "x86_64-unknown-linux-gnu";
