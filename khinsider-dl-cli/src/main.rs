@@ -8,6 +8,8 @@ use std::io;
 use std::path::Path;
 extern crate url;
 use url::Url;
+extern crate regex;
+use regex::Regex;
 
 fn main() {
     let args = Args::parse();
@@ -41,11 +43,16 @@ fn main() {
     let title_element_txt = get_text(&title_element[0], "h2");
     println!("Album: {:?}", title_element_txt);
     let album_dir = title_element_txt + "/";
-    match fs::create_dir(target_dir.to_owned() + "/" + &album_dir) {
+
+    let dir_str = target_dir.to_owned() + "/" + &album_dir;
+    let scrubed_dir_str = scrub_windows_dir_name(&dir_str);
+
+    match fs::create_dir(scrubed_dir_str) {
         Ok(_) => (),
         Err(err) => {
             // Handle the error
             if err.kind() == io::ErrorKind::AlreadyExists {
+                println!("Album directory already exists.");
             } else {
                 // Handle other errors (e.g., permission issues)
                 println!("Error creating directory: {}", err);
@@ -84,14 +91,16 @@ fn main() {
     }
     println!("Finished dowloading album.");
 }
-
+fn scrub_windows_dir_name(dir_str: &str) -> String {
+    let pattern = Regex::new("[<>:\"/\\|?*.]").unwrap();
+    pattern.replace_all(dir_str, "").to_string()
+}
 fn get_text(text: &str, tag: &str) -> String {
     let light_cone_html = Html::parse_fragment(text);
     let selector = Selector::parse(tag).unwrap();
     let result = light_cone_html.select(&selector).next().unwrap();
     result.text().collect()
 }
-
 fn get_tag(text: &str, tag: &str) -> Vec<String> {
     let html = Html::parse_document(text);
     let tag_selector = Selector::parse(tag).unwrap();
@@ -101,7 +110,6 @@ fn get_tag(text: &str, tag: &str) -> Vec<String> {
     }
     result
 }
-
 fn get_element_links(html: &str, element: &str) -> Vec<Links> {
     let document = Html::parse_document(html);
     let html_selector = Selector::parse(element).unwrap();
@@ -118,12 +126,10 @@ fn get_element_links(html: &str, element: &str) -> Vec<Links> {
     }
     elements
 }
-
 fn get_html(url: &str) -> String {
     let response = reqwest::blocking::get(url);
     response.unwrap().text().unwrap()
 }
-
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -134,7 +140,6 @@ struct Args {
     #[arg(short, long)]
     file_type: String,
 }
-
 #[derive(Debug)]
 struct Links {
     url: Option<String>,
