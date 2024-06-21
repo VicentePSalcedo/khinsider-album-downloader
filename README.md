@@ -3,6 +3,7 @@
 ## Dependencies
     - cargo
     - rust
+## Download and Use
 ```bash
 git clone https://github.com/VicentePSalcedo/khinsider-album-downloader.git
 cd khinsider-dl
