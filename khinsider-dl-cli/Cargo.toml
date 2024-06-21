@@ -1,0 +1,11 @@
+[package]
+name = "khinsider-dl"
+version = "0.1.0"
+authors = ["Vicente Salcedo vicentepsalcedo@gmail.com"]
+license = "file://LICENSE"
+
+[dependencies]
+clap = { version = "4.5.7", features = ["derive"] }
+reqwest = { version = "0.12.5", features = ["blocking"] }
+scraper = "0.19.0"
+url = "2.2"
