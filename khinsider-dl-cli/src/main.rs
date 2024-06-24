@@ -42,12 +42,11 @@ fn main() {
     let title_element = get_tag(&website_html, "h2");
     let title_element_txt = get_text(&title_element[0], "h2");
     println!("Album: {:?}", title_element_txt);
-    let album_dir = title_element_txt + "/";
+    let album_dir = scrub_windows_dir_name(&title_element_txt) + "/";
 
     let dir_str = target_dir.to_owned() + "/" + &album_dir;
-    let scrubed_dir_str = scrub_windows_dir_name(&dir_str);
 
-    match fs::create_dir(scrubed_dir_str) {
+    match fs::create_dir(dir_str) {
         Ok(_) => (),
         Err(err) => {
             // Handle the error

@@ -40,6 +40,11 @@ pkgs.mkShell rec {
     yq
   ];
   # Avoid polluting home dir with local project stuff.
+  packages = with pkgs; [
+    bacon
+    rust-analyzer
+    clippy
+  ];
   RUSTUP_HOME = toString ./.rustup;
   CARGO_HOME = toString ./.cargo;
   WINEPREFIX = toString ./.wine;
