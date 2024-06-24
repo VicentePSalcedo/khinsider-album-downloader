@@ -130,13 +130,9 @@ fn get_html(url: &str) -> String {
     response.unwrap().text().unwrap()
 }
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
 struct Args {
-    #[arg(short, long)]
     url: String,
-    #[arg(short, long)]
     target_dir: String,
-    #[arg(short, long)]
     file_type: String,
 }
 #[derive(Debug)]
