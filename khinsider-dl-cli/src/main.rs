@@ -1,13 +1,19 @@
-extern crate clap;
-use clap::Parser;
-extern crate scraper;
-use scraper::{Html, Selector};
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::path::Path;
+
+extern crate clap;
+use clap::Parser;
+
+extern crate scraper;
+use scraper::{Html, Selector};
+
 extern crate url;
 use url::Url;
+
+extern crate regex;
+use regex::Regex;
 
 fn main() {
     let args = Args::parse();
@@ -72,12 +78,19 @@ fn main() {
                 if !save_file_path.exists() {
                     let url = &p.url.unwrap();
                     let resp = reqwest::blocking::get(url).unwrap();
-                    let audio = resp.bytes().unwrap();
-                    println!("\tDownloading {} ...", song_name);
-                    let mut out = File::create(save_file).unwrap();
-                    io::copy(&mut audio.as_ref(), &mut out)
-                        .expect("{song_name} failed to download");
-                    println!("\t{} downloaded succesfully!", song_name);
+                    let audio = resp.bytes();
+                    match audio {
+                        Ok(bytes) => {
+                            println!("\tDownloading {} ...", song_name);
+                            let mut out = File::create(save_file).unwrap();
+                            io::copy(&mut bytes.as_ref(), &mut out)
+                                .expect("{song_name} failed to download");
+                            println!("\t{} downloaded succesfully!", song_name);
+                        }
+                        Err(err) => {
+                            println!("{}",err);
+                        }
+                    }
                 }
             }
         }
