@@ -61,6 +61,7 @@ fn main() {
         std::process::exit(1);
     }
 
+
     let file_type = &args.file_type;
     if !(file_type == "flac" || file_type == "mp3") {
         println!("Error: Invalid \"file_type\". Use \"flac\" or \"mp3\"");
@@ -74,6 +75,7 @@ fn main() {
         println!("Error: No song download links found in that \"album_url\"");
         std::process::exit(1);
     }
+
 
     let title_element = get_tag(&website_html, "h2");
     let title_element_txt = get_text(&title_element[0], "h2");
@@ -92,7 +94,6 @@ fn main() {
             }
         }
     }
-
     let index;
     let file_extension;
     if file_type == "mp3" {
