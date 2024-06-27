@@ -93,8 +93,10 @@ fn main() {
         }
     }
 
+    let index;
+    let file_extension;
     if file_type == "mp3" {
-        let index = 3;
+        index = 3;
         file_extension = ".mp3";
     } else {
         index = 4;
