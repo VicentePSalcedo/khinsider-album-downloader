@@ -140,29 +140,10 @@ fn main() {
     }
     println!("Finished dowloading album.");
 }
-
-fn scrub_windows_dir_name(dir_str: &str) -> String {
-    let pattern = Regex::new("[<>:\"/\\|?*.]").unwrap();
-    pattern.replace_all(dir_str, "").to_string()
+fn get_html(url: &str) -> String {
+    let response = get(url);
+    response.unwrap().text().unwrap()
 }
-
-fn get_text(text: &str, tag: &str) -> String {
-    let light_cone_html = Html::parse_fragment(text);
-    let selector = Selector::parse(tag).unwrap();
-    let result = light_cone_html.select(&selector).next().unwrap();
-    result.text().collect()
-}
-
-fn get_tag(text: &str, tag: &str) -> Vec<String> {
-    let html = Html::parse_document(text);
-    let tag_selector = Selector::parse(tag).unwrap();
-    let mut result: Vec<String> = vec![];
-    for element in html.select(&tag_selector) {
-        result.push(element.html());
-    }
-    result
-}
-
 fn get_element_links(html: &str, element: &str) -> Vec<Links> {
     let document = Html::parse_document(html);
     let html_selector = Selector::parse(element).unwrap();
@@ -179,8 +160,22 @@ fn get_element_links(html: &str, element: &str) -> Vec<Links> {
     }
     elements
 }
-
-fn get_html(url: &str) -> String {
-    let response = get(url);
-    response.unwrap().text().unwrap()
+fn get_tag(text: &str, tag: &str) -> Vec<String> {
+    let html = Html::parse_document(text);
+    let tag_selector = Selector::parse(tag).unwrap();
+    let mut result: Vec<String> = vec![];
+    for element in html.select(&tag_selector) {
+        result.push(element.html());
+    }
+    result
+}
+fn get_text(text: &str, tag: &str) -> String {
+    let light_cone_html = Html::parse_fragment(text);
+    let selector = Selector::parse(tag).unwrap();
+    let result = light_cone_html.select(&selector).next().unwrap();
+    result.text().collect()
+}
+fn scrub_windows_dir_name(dir_str: &str) -> String {
+    let pattern = Regex::new("[<>:\"/\\|?*.]").unwrap();
+    pattern.replace_all(dir_str, "").to_string()
 }
